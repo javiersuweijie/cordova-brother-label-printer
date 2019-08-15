@@ -68,6 +68,7 @@ public class BrotherPrinter extends CordovaPlugin {
     private static PrinterInfo.Model[] supportedModels = {
         PrinterInfo.Model.QL_720NW,
         PrinterInfo.Model.QL_820NWB,
+        PrinterInfo.Model.QL_810W,
     };
 
     private final static int PERMISSION_WRITE_EXTERNAL_STORAGE = 1;
@@ -358,7 +359,7 @@ public class BrotherPrinter extends CordovaPlugin {
 
             PluginResult result = new PluginResult(PluginResult.Status.OK, args);
             callbackctx.sendPluginResult(result);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             PluginResult result = new PluginResult(PluginResult.Status.ERROR, "An error occurred while trying to set the printer.");
             callbackctx.sendPluginResult(result);
@@ -380,7 +381,7 @@ public class BrotherPrinter extends CordovaPlugin {
 
             PluginResult result = new PluginResult(PluginResult.Status.OK, args);
             callbackctx.sendPluginResult(result);
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             PluginResult result = new PluginResult(PluginResult.Status.ERROR, "An error occurred while trying to set the printer.");
             callbackctx.sendPluginResult(result);
@@ -461,7 +462,6 @@ public class BrotherPrinter extends CordovaPlugin {
                     }
 
                     myPrinter.setPrinterInfo(myPrinterInfo);
-
                     setPrinterLabelInfo(sharedPreferences);
 
                     myPrinter.startCommunication();
@@ -503,6 +503,7 @@ public class BrotherPrinter extends CordovaPlugin {
         Boolean useCustomLabel = sharedPreferences.getBoolean("useCustomLabel", false);
         String labelModel = sharedPreferences.getString("labelModel", "");
         String labelName = sharedPreferences.getString("labelName", "");
+
 
         if (useCustomLabel) {
             myPrinterInfo.labelNameIndex = getLabelNameId(labelModel, labelName);
@@ -593,7 +594,7 @@ public class BrotherPrinter extends CordovaPlugin {
                 myPrinterInfo.port          = PrinterInfo.Port.valueOf(printerPort);
 
                 if (PrinterInfo.Port.NET.toString().equals(port)) {
-                    myPrinterInfo.ipAddress = PrinterInfo.Port.NET.valueOf(ipAddress).toString();
+                    myPrinterInfo.ipAddress = ipAddress;
                 }
 
                 myPrinter.setPrinterInfo(myPrinterInfo);
@@ -688,6 +689,8 @@ public class BrotherPrinter extends CordovaPlugin {
                     PluginResult result = new PluginResult(PluginResult.Status.OK, status_code);
                     callbackctx.sendPluginResult(result);
                 }catch(Exception e){
+                    PluginResult result = new PluginResult(PluginResult.Status.ERROR, "Unknown error");
+                    callbackctx.sendPluginResult(result);
                     e.printStackTrace();
                 }
             }
